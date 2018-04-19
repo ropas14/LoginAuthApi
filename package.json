@@ -1,0 +1,28 @@
+{
+  "name": "loginrestapi",
+  "version": "1.0.0",
+  "description": "Login restful Api using cookies",
+  "main": "\u001b[6~",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "tokens",
+    "login",
+    "headers",
+    "cookies"
+  ],
+  "author": "Ropafadzo Shumba",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^2.0.0",
+    "body-parser": "^1.18.2",
+    "connect-mongo": "^2.0.1",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.16.3",
+    "express-session": "^1.15.6",
+    "joi": "^13.2.0",
+    "joigoose": "^4.0.0",
+    "shortid": "^2.2.8"
+  }
+}
