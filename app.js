@@ -2,6 +2,7 @@
 var express = require('express');
 var session = require('express-session');
 var mongoose = require('mongoose');
+var logger=require('morgan');
 var db = mongoose.connection;
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
@@ -13,6 +14,8 @@ var mongoDB = 'mongodb://localhost:27017/LogInUsers';
 mongoose.connect(mongoDB)
 //Bind connection to error event (to get notification of connection errors)
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
+app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
    extended: false
@@ -23,8 +26,8 @@ app.use(session({
    name: 'connect.sid',
    secret: "blginkeyboard",
    proxy: true,
-   resave: true,
-   saveUninitialized: false,
+   resave: false,
+   saveUninitialized: true,
    cookie:{
       path: "/",
       httpOnly: true,
@@ -35,19 +38,7 @@ app.use(session({
       mongooseConnection: db
    })
 }));
-session.Session.prototype.login = function(user, cb)
-{
-   const req = this.req;
-   req.session.regenerate(function(err)
-   {
-      if (err){
-         cb(err);
-      }
-   });
-   req.session.userInfo = user;
-   cb();
-};
-// include routes
+
 var routes = require('./routes/router');
 app.use('/', routes);
 app.use(function(req, res, next)
