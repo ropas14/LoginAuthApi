@@ -41,6 +41,7 @@ app.use(session({
 
 var routes = require('./routes/router');
 app.use('/', routes);
+// maybe this might be affecting session save not so sure
 app.use(function(req, res, next)
 {
    if (req.session && req.session.user)

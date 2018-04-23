@@ -4,21 +4,6 @@ var Users = require('../model/data');
 var session = require('express-session');
 var shortid = require('shortid');
 
-/*function requiresLogin(req, res, next)
-{
-    
-   if (req.session && req.session.user&& req.session.admin)
-   {
-     return next();
-   }
-   else
-   {
-      var err = new Error('You must be logged in to view this page.');
-      err.status = 401;
-      return next(err);
-   }
-   
-}*/
 
 // GET route after registering
 router.get('/profile',  function(req, res, next)
@@ -60,9 +45,15 @@ router.post('/signUp', function(req, res, next)
          }
          else{        
          req.session.user = user;
-         req.session.admin = true;
-         return res.send("successful signup");
-         //return res.redirect('/profile');
+         req.session.admin = true; 
+         // saving session, but dont know why on redirection its not saved		 
+		 req.session.save((err) => {
+                if (!err) {
+                    console.log(req.session);
+                    res.redirect('/profile');
+                }
+            });
+         
          }
       });
 
@@ -125,12 +116,13 @@ router.post('/users/login', function(req, res)
          req.session.userId = user._id;
          req.session.user = user;
          req.session.admin = true;
-         res.json({
-            status: 1,
-            id: user._id,
-            message: " successfully logged in"
-         });
-       //res.redirect('/profile');
+		 // saving session, but dont know why on redirection its not save
+         req.session.save((err) => {
+                if (!err) {
+                    console.log(req.session);
+                    res.redirect('/profile');
+                }
+            });
       })
    }
    else{
