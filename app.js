@@ -1,14 +1,14 @@
 'use strict';
 var express = require('express');
+var app = express();
 var session = require('express-session');
-var mongoose = require('mongoose');
-var logger=require('morgan');
-var db = mongoose.connection;
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
+var logger=require('morgan');
 var MongoStore = require('connect-mongo')(session);
 const port = process.env.PORT || 3000;
-var app = express();
+var db = mongoose.connection;
 //Set up default mongoose connection
 var mongoDB = 'mongodb://localhost:27017/LogInUsers';
 mongoose.connect(mongoDB)
@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({
 app.use(cookieParser());
 app.set('trust proxy', 1); // trust first proxy
 app.use(session({
-   name: 'connect.sid',
+   name: 'user_sid',
    secret: "blginkeyboard",
    proxy: true,
    resave: false,
@@ -41,6 +41,19 @@ app.use(session({
 
 var routes = require('./routes/router');
 app.use('/', routes);
+
+app.use(function(req,res,next){
+ var _send=res.send;
+ var sent=false;
+ res.send=function(data){
+   if (sent) return;
+   _send.bind(res)(data);
+   sent=true;
+
+  };
+  next();
+
+})
 // maybe this might be affecting session save not so sure
 app.use(function(req, res, next)
 {
@@ -67,20 +80,16 @@ app.use(function(req, res, next)
       next();
    }
 });
-// catch 404 and forward to error handler
-app.use(function(req, res, next)
-{
-   var err = new Error('File Not Found');
-   err.status = 404;
-   next(err);
+
+app.use(function(req, res, next) {
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, content type, Authorization, Accept');
+    next();
 });
-// error handler
-// define as the last app.use callback
-app.use(function(err, req, res, next)
-{
-   res.status(err.status || 500);
-   res.send(err.message);
-});
+
+
 app.use(function(err, req, res, next)
 {
    res.status(400).json(err);

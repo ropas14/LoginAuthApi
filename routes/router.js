@@ -6,16 +6,18 @@ var shortid = require('shortid');
 
 
 // GET route after registering
-router.get('/profile',  function(req, res, next)
+router.get('/users/profile',  function(req, res, next)
 { if(!req.session.user){
 
       return res.status(401).send('You must be logged in to view this page.');
    }
+
+   console.log(req.session.user);
    return res.status(200).send('Welcome to your profile');
 });
 
 //POST route for updating data
-router.post('/signUp', function(req, res, next)
+router.post('/users/signUp', function(req, res, next)
 {
    // confirm that user typed same password twice
    if (req.body.password !== req.body.passwordConf)
@@ -45,12 +47,13 @@ router.post('/signUp', function(req, res, next)
          }
          else{        
          req.session.user = user;
-         req.session.admin = true; 
-         // saving session, but dont know why on redirection its not saved		 
+         req.session.admin = true;         
+       // saving session, but dont know why on redirection its not saved		 
 		 req.session.save((err) => {
                 if (!err) {
                     console.log(req.session);
-                    res.redirect('/profile');
+                    return res.send('successful signUp');
+                   //return res.redirect('/profile');
                 }
             });
          
@@ -66,15 +69,10 @@ router.post('/signUp', function(req, res, next)
 
 });
 
-// POST route after registering
-router.post('/profile', function(req, res, next)
-{
 
-   return res.send('POST profile');
-});
 
 //GET /logout
-router.get('/logout', function(req, res, next)
+router.get('/users/logout', function(req, res, next)
 {
    if (req.session){
       // delete session object
@@ -92,7 +90,7 @@ router.get('/logout', function(req, res, next)
 
 
 // Login user
-router.post('/users/login', function(req, res)
+router.post('/users/login', function(req, res,next)
 {
    var email = req.body.email;
    var password = req.body.password;
@@ -113,14 +111,17 @@ router.post('/users/login', function(req, res)
                msg: "user not found"
             });
          }
-         req.session.userId = user._id;
+        // req.session.userId = user._id;
          req.session.user = user;
          req.session.admin = true;
+        
 		 // saving session, but dont know why on redirection its not save
          req.session.save((err) => {
                 if (!err) {
                     console.log(req.session);
-                    res.redirect('/profile');
+                   //return res.send(' successfully logged In');
+                    res.status(200).send();
+                    res.redirect('/users/profile');
                 }
             });
       })
