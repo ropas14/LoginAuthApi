@@ -23,8 +23,9 @@ function requiresLogin(req, res, next)
 
 var clientId='131519218626-ti537rrb7lnrt5m9qof45hfregh55s9d.apps.googleusercontent.com';
 var clientSecret='859ZEgBFt_v21TN2E5WDrrIu';
-var redirectUrl='http://localhost:3000/users/oauthggle';
+var redirectUrl='http://localhost:3000/users/googleOauth';
 
+// get client authentication
 const oauth2Client = new google.auth.OAuth2(clientId,clientSecret,redirectUrl);
 
 // generate a url that asks permissions for Google+ and Google Calendar scopes
@@ -39,7 +40,8 @@ const url = oauth2Client.generateAuthUrl({
   // If you only need one scope you can pass it as a string
   scope: scopes
 });
-
+ 
+ //testing to see if the url works
 router.get('/url', function(req, res){
  res.send(url)
 });
@@ -67,7 +69,8 @@ router.get("/tokens", function(req, res) {
   });
 });
 
-router.get("/users/oauthggle", function (req, res) {    
+// get information about the page when logged in
+router.get("/users/googleOauth",function (req, res) {    
     var session = req.session;
     var code = req.query.code;
     oauth2Client.getToken(code, function(err, tokens) {
@@ -77,7 +80,7 @@ router.get("/users/oauthggle", function (req, res) {
         session["tokens"]=tokens;
         res.send(`
             <h3>Login successful!!</h3>
-            <a href="/details">Go to details page</a>
+            <a href="/users/details">Go to details page</a>
         `);
       }
       else{
@@ -97,12 +100,13 @@ router.get("/users/details", function (req, res) {
         });
     }).then(function (data) {
         res.send(`
-            <img src=${data.image.url} />;
+            <img src=${data.image} />;
             <h3>Hello ${data.displayName}</h3>
         `);
     })
 });
 
+// Initial route used for testing
 router.use("/", function (req, res) {
     res.send(`
        <h1>Authentication using google oAuth</h1>
