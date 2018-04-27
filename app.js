@@ -25,15 +25,16 @@ app.set('trust proxy', 1); // trust first proxy
 app.use(session({
    name: 'user_sid',
    secret: "blginkeyboard",
+   activeDuration: 5 * 60 * 1000,
    proxy: true,
    resave: false,
    saveUninitialized: true,
    cookie:{
       path: "/",
       httpOnly: true,
-      secure: true,
-      expires: new Date(253402300000000)
-   },
+      secure: true
+      //expires: new Date(253402300000000)
+   }
    store: new MongoStore({
       mongooseConnection: db
    })
