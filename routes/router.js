@@ -88,7 +88,7 @@ router.get("/users/oauthggle", function (req, res) {
     });
 });
  
-app.use("/users/details", function (req, res) {   
+router.get("/users/details", function (req, res) {   
     oauth2Client.setCredentials(req.session["tokens"]);
  
     var p = new Promise(function (resolve, reject) {

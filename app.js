@@ -34,7 +34,7 @@ app.use(session({
       httpOnly: true,
       secure: true
       //expires: new Date(253402300000000)
-   }
+   },
    store: new MongoStore({
       mongooseConnection: db
    })
