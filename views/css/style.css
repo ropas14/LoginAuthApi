@@ -251,3 +251,10 @@ form input[type=url]{
     font-size: 12px;
     padding: 10px;
 }
+
+    #passtrength {
+    color:red;
+    font-family:verdana;
+    font-size:10px;
+    font-weight:bold;
+}

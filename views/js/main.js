@@ -3,6 +3,9 @@ $(function() {
     var SHOW_CLASS = 'show',
         HIDE_CLASS = 'hide',
         ACTIVE_CLASS = 'active';
+
+    $("input[name='passwordConf']").keyup(checkPasswordMatch);
+         
     $('.tabs').on('click', 'li a', function(e) {
         e.preventDefault();
         var tab = $(this),
@@ -13,32 +16,55 @@ $(function() {
         $(href).removeClass(HIDE_CLASS).addClass(SHOW_CLASS).hide().fadeIn(620);
     });
 
+
+       /*Password Strength meter */
+    $('input[name="passwordreg"]').keyup(function (e) {
+        var strongRegex = new RegExp("^(?=.{15,})(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*\\W).*$", "g");
+        var includeCapsRegex = new RegExp("^(?=.{14,})(?=.*[a-z0-9])(?=.*\\W).*$", "g");
+        var complexCharRegex = new RegExp("^(?=.{10,})(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).*$", "g");
+        var enoughRegex = new RegExp("(?=.{13,}).*", "g");
+        if (false == enoughRegex.test($(this).val())) {
+            $('#passtrength').html('Add More Characters');
+        } else if (strongRegex.test($(this).val())) {           
+            $('#passtrength').html('Strong!');
+        } else if (includeCapsRegex.test($(this).val())) {
+            $('#passtrength').className = 'alert';
+            $('#passtrength').html('include  Capital Letters!');
+        } else if (complexCharRegex.test($(this).val())) {
+            $('#passtrength').html('include characters like (#,@,%,&)!');
+        }
+        else {
+            $('#passtrength').className = 'error';
+            $('#passtrength').html('requires Capitals ,complexCharacters(@,#),numbers!');
+        }
+        return true;
+    });
+
     var $email =$('input[name="email"]');
     var $password=$('input[name="password"]');
     var $phone =$('input[name="phone"]');
-    var $name=$('input[name="name"]');
+    var $username=$('input[name="name"]');
     var $passwordConfirm =$('input[name="passwordConf"]');
 
      $('input[value="Login"]').on('click' , function(){
         if($email!=""&& $password!=""){
 
-           var member={
+          var member={
           email: $email.val(),
           password: $password.val()
         };
 
         $.ajax({
-
            type: 'POST',
            url: 'http://localhost:3000/users/login',
            data: member, 
-           success: function(name){
-             alert("successfully logged in" + name.email);
+           success: function(){
+             alert("successfully logged in");
            },
            error:function(){
              alert("error logging In");
-           },
-            dataType: "json"
+           }
+            
         });
       }
 
@@ -54,11 +80,11 @@ $(function() {
 
      $('input[value="Sign Up"]').on('click' , function(){
 
-      if($emailreg!="" && $passwordreg!="" && $name!=""&& $phone!="" && $passwordConfirm!=""){
+      if($emailreg!="" && $passwordreg!="" && $username!=""&& $phone!="" && $passwordConfirm!=""){
 
-          var register={
+          var signReg={
           email: $emailreg.val(),
-          username: $name.val(),
+          username: $username.val(),
           password: $passwordreg.val(),
           passwordConf: $passwordConfirm.val(),
           phone: $phone.val()
@@ -68,14 +94,15 @@ $(function() {
 
            type: 'POST',
            url: 'http://localhost:3000/users/signUp',
-           data: register, 
+           data: signReg, 
+           dataType: "json",
+           cache: false,
            success: function(){
              alert("successfully reqistered");
            },
            error:function(){
              alert("error registering");
-           },
-           dataType: "json"
+           }           
         });
       }
 
@@ -86,27 +113,36 @@ $(function() {
     });
     
 
-
-
 });
 
-// initialize the validator function
-      var validator = new FormValidator();
-      
-      // validate a field on "blur" event, a 'select' on 'change' event &amp; a '.reuired' classed multifield on 'keyup':
-      $('form').on('blur', 'input[required], input.optional, select.required', validator.checkField).on('change', 'select.required', validator.checkField).on('keypress', 'input[required][pattern]', validator.keypress);
-      $('.multi.required').on('keyup blur', 'input', function() {
-          validator.checkField.apply($(this).siblings().last()[0]);
-      });
-      // bind the validation to the form submit event
-      //$('#send').click('submit');//.prop('disabled', true);
-      $('form').submit(function(e) {
-          e.preventDefault();
-          var submit = true;
-          // evaluate the form using generic validaing
-          if (!validator.checkAll($(this))) {
-              submit = false;
-          }
-          if (submit) this.submit();
-          return false;
-      });
+function checkPasswordMatch() {
+        var password = $("input[name='passwordreg']").val();
+        var confirmPassword = $("input[name='passwordConf']").val();
+
+        if (password != confirmPassword)
+            $("#divCheckPasswordMatch").html("Passwords do not match!");
+        else
+            $("#divCheckPasswordMatch").html("Passwords match.");
+    }
+
+function validateEmail(emailField) {
+        var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+
+        if (reg.test(emailField.value) == false) {
+            alert('Invalid mail Address');
+            return false;
+        }
+
+        return true;
+    }
+
+    function validatePhone(phoneField) {
+        var reg = /^(\+?[0-9]{7,45})*$/;
+
+        if (reg.test(phoneField.value) == false) {
+            alert('Invalid Phone Number');
+            return false;
+        }
+
+        return true;
+    }

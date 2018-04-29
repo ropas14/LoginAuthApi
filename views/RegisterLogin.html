@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<title>Create a Flat Login/Sign up Page with Validation, Styling &amp; Semantics Of Forms jQuery Plugin</title>
+   <meta charset="utf-8">
+   <title>Create a Flat Login/Sign up Page with Validation, Styling </title>
    <link href="css/style.css" media="screen" rel="stylesheet">
    <link href="css/reset.css" media="screen" rel="stylesheet">
-   <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,600italic,700italic,800italic,400,300,600,800' rel='stylesheet' type='text/css'>
+   <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,600italic,700italic,800italic,400,300,600,800' 
+    rel='stylesheet' type='text/css'>
+   <<script src="js/jquery.validate.js"></script>
+   <script src="js/jquery.smoothState.js"></script> 
    <script src="js/jquery.min.js"></script>
-   <script src="js/validator.js"></script>
+   <!-- <script src="js/validator.js"></script> -->
    <script src="js/main.js"></script>
 
    <!--[if lt IE 9]>
@@ -33,21 +36,23 @@
             <fieldset>
                 <ul>
                     <li>
-                        <div class="item">
+                        <div class="item required">
                             <input data-validate-length-range="6" name="email"
-                            placeholder="Email" required="required" type="text">
+                              onblur="validateEmail(this)" placeholder="Email" 
+                              required="required" type="text">
                             
                         </div>
                     </li>
 
                     <li>
-                        <div class="item">
-                            <input data-validate-length-range="6" name="password"
+                        <div class="item required">
+                            <input data-validate-length-range="15" name="password"
                              placeholder="Password" required='required' type="password">
+                              <span id="passstrength"></span>
                         </div>
                     </li>
 
-                    <li><input class="button-login" type="submit" value="Login"></li>
+                    <li><input class="button-login required" type="submit" value="Login"></li>
                 </ul>
             </fieldset>
         </form>
@@ -59,42 +64,45 @@
             <fieldset>
                 <ul>
                     <li>
-                        <div class="item">
+                        <div class="item required">
                             <input data-validate-length-range="6" name="name"
                             placeholder="Username" required="required" type= "text">
                         </div>
                     </li>
 
                     <li>
-                        <div class="item">
+                        <div class="item required">
                             <input class='email' name="emailreg" placeholder="Email" 
-                            required="required" type="email">
+                             onblur="validateEmail(this)" required="required" type="email">
                         </div>
                     </li>
 
                      <li>
-                        <div class="item">
+                        <div class="item required">
                             <input data-validate-length-range="6"  name="phone" 
-                            placeholder="Phone" required="required" type="text">
+                           onblur="validatePhone(this)" placeholder="Phone" required="required" type="text">
+
                         </div>
                     </li>
 
                     <li>
-                        <div class="item">
+                        <div class="item required">
                             <input data-validate-length="6,8" name="passwordreg"
-                            placeholder="Password" required='required' type="text">
+                            placeholder="Password" required='required' type="password">
+                             <span id="passtrength"></span>
                         </div>
                     </li>
 
                        <li>
-                        <div class="item">
+                        <div class="item required">
                             <input data-validate-length="6,8" name="passwordConf" 
-                            placeholder="PasswordConfirm" required="required" type="text">
+                            placeholder="PasswordConfirm" required="required" type="password">
+                            <div class="registrationFormAlert" id="divCheckPasswordMatch">
                         </div>
                     </li>
 
 
-                    <li><input class="button-register" id='send' type="submit"
+                    <li><input class="button-register required" id='send' type="submit"
                     value="Sign Up"></li>
                 </ul>
             </fieldset>
